@@ -1,0 +1,31 @@
+{
+  "name": "cybershield-backend",
+  "version": "1.0.0",
+  "description": "CyberShield AI - Real-time Threat Intelligence & Security Validation Engine powered by Google Gemini",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cybersecurity",
+    "gemini-ai",
+    "threat-detection",
+    "gdg-hackathon",
+    "soc",
+    "security-analysis",
+    "ai-defense"
+  ],
+  "author": "CyberShield Architecture Team",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^0.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0"
+  }
+}
