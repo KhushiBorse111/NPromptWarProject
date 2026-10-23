@@ -79,49 +79,25 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
+        defaultSrc: ["'self'", '*'],
         scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.tailwindcss.com', 'https://unpkg.com'],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'", 'http://localhost:5000', 'http://127.0.0.1:5000', 'https://generativelanguage.googleapis.com']
+        connectSrc: ['*']
       }
     },
-    crossOriginEmbedderPolicy: false
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' }
   })
 );
 
-// 2. CORS: Strict origin filtering
-const rawOrigins = process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:5500,http://localhost:5000,http://127.0.0.1:5000';
-const ALLOWED_ORIGINS = rawOrigins.split(',').map((o) => o.trim()).filter(Boolean);
-
+// 2. CORS: Allow all origins and headers during local development
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. server-to-server, curl, mobile apps, or same-origin)
-      if (!origin) return callback(null, true);
-
-      // Check configured origins or wildcard
-      if (ALLOWED_ORIGINS.includes('*') || ALLOWED_ORIGINS.includes(origin)) {
-        return callback(null, true);
-      }
-
-      // In development mode, allow standard localhost and 127.0.0.1 ports
-      if (NODE_ENV !== 'production' && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
-        return callback(null, true);
-      }
-
-      // Block unauthorized origins
-      const corsErr = new SecurityValidationError(
-        `CORS access denied: Origin '${origin}' is not whitelisted.`,
-        'CORS_ORIGIN_DENIED',
-        403
-      );
-      return callback(corsErr, false);
-    },
+    origin: '*',
     methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    credentials: true
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
   })
 );
 
@@ -955,7 +931,7 @@ const server = app.listen(PORT, () => {
  [✓] Rate Limiting        : Enforced (30 requests / 15 mins)
  [✓] SSRF Protection      : Enforced (RFC 1918, RFC 3927, RFC 5737, IPv6 ULA)
  [✓] Anti-Hallucination   : Grounding & Strict JSON Schema Active
- [✓] CORS Security        : Strict Origin Validation Active
+ [✓] CORS Security        : Open for Local Dev (origin: '*', all headers)
 ─────────────────────────────────────────────────────────────────
  Server running and listening for security payloads.
 `);
